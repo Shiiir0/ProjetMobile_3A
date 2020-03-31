@@ -21,6 +21,10 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //je rajoute du code
+
+        showList();
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -30,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void showList() {
+        //TODO Afficher liste
+    }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
