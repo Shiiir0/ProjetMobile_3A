@@ -4,25 +4,29 @@ import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
-    private RecyclerView recyclerView;
-    private listAdapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,24 +36,26 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //je rajoute du code
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        // use this setting to
-        // improve performance if you know that changes
-        // in content do not change the layout size
-        // of the RecyclerView
+
+        showList();
+        makeApiCall();
+
+    }
+
+    private void showList() {
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+
         recyclerView.setHasFixedSize(true);
+
         // use a linear layout manager
-        layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         List<String> input = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             input.add("Test" + i);
         }// define an adapter
-        mAdapter = new listAdapter(input);
+        listAdapter mAdapter = new listAdapter(input);
         recyclerView.setAdapter(mAdapter);
-
-        showList();
-
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,10 +64,6 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-    }
-
-    private void showList() {
-        //TODO Afficher liste
     }
 
 
@@ -86,5 +88,43 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    static final String BASE_URL = "https://dragon-ball-api.herokuapp.com/";
+
+    private void makeApiCall() {
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        DBApi DBAPI = retrofit.create(DBApi.class);
+
+        Call<List<Character>> call = DBAPI.getRestDragonBallResponse();
+        call.enqueue(new Callback<List<Character>>() {
+            @Override
+            public void onResponse(Call<List<Character>> call, Response<List<Character>> response) {
+                if(response.isSuccessful() && response.body() != null) {
+
+                    List<Character> CharacterList = response.body();
+                    Toast.makeText(getApplicationContext(), "API Success", Toast.LENGTH_SHORT).show();
+                }else{
+                    ShowError();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Character>> call, Throwable t) {
+                ShowError();
+            }
+        });
+    }
+
+    private void ShowError() {
+        Toast.makeText(getApplicationContext(), "Api Error", Toast.LENGTH_SHORT).show();
     }
 }
