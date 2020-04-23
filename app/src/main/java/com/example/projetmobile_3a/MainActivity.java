@@ -36,13 +36,12 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //je rajoute du code
-
-        showList();
+        //showList();
         makeApiCall();
 
     }
 
-    private void showList() {
+    private void showList(List<Character> listCharacter) {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
         recyclerView.setHasFixedSize(true);
@@ -50,20 +49,14 @@ public class MainActivity extends AppCompatActivity {
         // use a linear layout manager
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        List<String> input = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            input.add("Test" + i);
-        }// define an adapter
-        listAdapter mAdapter = new listAdapter(input);
+
+
+
+            // define an adapter
+
+
+        listAdapter mAdapter = new listAdapter(listCharacter);
         recyclerView.setAdapter(mAdapter);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
 
@@ -111,7 +104,8 @@ public class MainActivity extends AppCompatActivity {
                 if(response.isSuccessful() && response.body() != null) {
 
                     List<Character> CharacterList = response.body();
-                    Toast.makeText(getApplicationContext(), "API Success", Toast.LENGTH_SHORT).show();
+                    showList(CharacterList);
+                    //Toast.makeText(getApplicationContext(), "API Success", Toast.LENGTH_SHORT).show();
                 }else{
                     ShowError();
                 }
@@ -127,4 +121,5 @@ public class MainActivity extends AppCompatActivity {
     private void ShowError() {
         Toast.makeText(getApplicationContext(), "Api Error", Toast.LENGTH_SHORT).show();
     }
+
 }
