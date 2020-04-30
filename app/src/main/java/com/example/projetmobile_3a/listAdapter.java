@@ -37,6 +37,7 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
      public void remove(int position) {
         values.remove(position);
         notifyItemRemoved(position);
+        notifyItemRangeChanged(position, values.size());
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
