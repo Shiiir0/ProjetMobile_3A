@@ -1,11 +1,14 @@
 package com.example.projetmobile_3a;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -23,21 +26,44 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private SharedPreferences SharedPreferences;
+    private Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        /*Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);*/
 
-        //je rajoute du code
-        //showList();
-        makeApiCall();
+        //creer le stockage cache
+        SharedPreferences = getSharedPreferences("application_esiea", Context.MODE_PRIVATE);
+
+        gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        List<Character> CharacterList = getDataFromCache();
+        if(CharacterList != null) {
+            showList(CharacterList);
+        }else makeApiCall();
+
+    }
+
+    private List<Character> getDataFromCache() {
+        String jsonCharacter = SharedPreferences.getString("jsonCharacterList", null);
+
+        if(jsonCharacter == null) {
+            return null;
+        }else {
+            Type listType = new TypeToken<List<Character>>() {}.getType();
+            return gson.fromJson(jsonCharacter, listType);
+        }
 
     }
 
@@ -86,9 +112,7 @@ public class MainActivity extends AppCompatActivity {
     static final String BASE_URL = "https://dragon-ball-api.herokuapp.com/";
 
     private void makeApiCall() {
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
+
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -104,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 if(response.isSuccessful() && response.body() != null) {
 
                     List<Character> CharacterList = response.body();
+                    saveList(CharacterList);
                     showList(CharacterList);
                     //Toast.makeText(getApplicationContext(), "API Success", Toast.LENGTH_SHORT).show();
                 }else{
@@ -116,6 +141,17 @@ public class MainActivity extends AppCompatActivity {
                 ShowError();
             }
         });
+    }
+
+    private void saveList(List<Character> CharacterList) {
+        String jsonString = gson.toJson(CharacterList);
+        SharedPreferences
+                .edit()
+
+                .putString("jsonCharacterList", jsonString)
+                .apply();
+
+        Toast.makeText(getApplicationContext(), "List saved", Toast.LENGTH_SHORT).show();
     }
 
     private void ShowError() {
