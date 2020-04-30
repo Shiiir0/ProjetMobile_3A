@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         /*Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);*/
 
-        //creer le stockage cache
+        //creer le stockage cache test
         SharedPreferences = getSharedPreferences("application_esiea", Context.MODE_PRIVATE);
 
         gson = new GsonBuilder()
