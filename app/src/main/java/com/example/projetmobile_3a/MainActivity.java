@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -38,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);*/
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         //creer le stockage cache
         SharedPreferences = getSharedPreferences("application_esiea", Context.MODE_PRIVATE);
@@ -83,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
 
         listAdapter mAdapter = new listAdapter(listCharacter);
         recyclerView.setAdapter(mAdapter);
+
+
     }
 
 
