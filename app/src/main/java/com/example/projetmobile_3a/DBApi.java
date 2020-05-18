@@ -9,4 +9,5 @@ import retrofit2.http.Query;
 public interface DBApi {
     @GET("api/character")
     Call<List<Character>> getRestDragonBallResponse();
+
 }

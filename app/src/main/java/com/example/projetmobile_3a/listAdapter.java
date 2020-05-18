@@ -86,15 +86,15 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         final Character currentCharacter = values.get(position);
 
         //Load image
         if(currentCharacter.getImage().charAt(0) == '.') {
-            Glide.with(context).load(BASE_URL + currentCharacter.getImage()).into(holder.imageDB);
-        }else Glide.with(context).load(currentCharacter.getImage()).into(holder.imageDB);
+            Glide.with(context).load(BASE_URL + currentCharacter.getImage()).circleCrop().into(holder.imageDB);
+        }else Glide.with(context).load(currentCharacter.getImage()).circleCrop().into(holder.imageDB);
 
         holder.txtHeader.setText(currentCharacter.getName());
         holder.txtHeader.setOnClickListener(new View.OnClickListener() {
@@ -112,9 +112,5 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
     public int getItemCount() {
         return values.size();
     }
-
-
-
-
 
 }
