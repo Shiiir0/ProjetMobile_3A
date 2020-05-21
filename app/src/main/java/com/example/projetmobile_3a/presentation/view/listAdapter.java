@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
+import com.example.projetmobile_3a.Constants;
 import com.example.projetmobile_3a.R;
 import com.example.projetmobile_3a.presentation.model.Character;
 
@@ -21,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
     private List<Character> values;
     Context context;
-    static final String BASE_URL = "https://dragon-ball-api.herokuapp.com/";
+
 
 
     // Provide a reference to the views for each data item
@@ -84,7 +85,7 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
 
         //Load image
         if(currentCharacter.getImage().charAt(0) == '.') {
-            Glide.with(context).load(BASE_URL + currentCharacter.getImage()).circleCrop().into(holder.imageDB);
+            Glide.with(context).load(Constants.BASE_URL + currentCharacter.getImage()).circleCrop().into(holder.imageDB);
         }else Glide.with(context).load(currentCharacter.getImage()).circleCrop().into(holder.imageDB);
 
         holder.txtHeader.setText(currentCharacter.getName());

@@ -4,34 +4,27 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-
 import com.example.projetmobile_3a.R;
-import com.example.projetmobile_3a.data.DBApi;
+
+import com.example.projetmobile_3a.presentation.controller.MainController;
 import com.example.projetmobile_3a.presentation.model.Character;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private SharedPreferences SharedPreferences;
-    private Gson gson;
+
+    private MainController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,33 +33,19 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //creer le stockage cache
-        SharedPreferences = getSharedPreferences("application_esiea", Context.MODE_PRIVATE);
+        controller = new MainController(
+                this,
+                new GsonBuilder()
+                        .setLenient()
+                        .create(),
+                getSharedPreferences("application_esiea", Context.MODE_PRIVATE)
 
-        gson = new GsonBuilder()
-                .setLenient()
-                .create();
-
-        List<Character> CharacterList = getDataFromCache();
-        if(CharacterList != null) {
-            showList(CharacterList);
-        }else makeApiCall();
+        );
+        controller.onStart();
 
     }
 
-    private List<Character> getDataFromCache() {
-        String jsonCharacter = SharedPreferences.getString("jsonCharacterList", null);
-
-        if(jsonCharacter == null) {
-            return null;
-        }else {
-            Type listType = new TypeToken<List<Character>>() {}.getType();
-            return gson.fromJson(jsonCharacter, listType);
-        }
-
-    }
-
-    private void showList(List<Character> listCharacter) {
+    public void showList(List<Character> listCharacter) {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
         recyclerView.setHasFixedSize(true);
@@ -85,8 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,52 +87,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    static final String BASE_URL = "https://dragon-ball-api.herokuapp.com/";
-
-    private void makeApiCall() {
-
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        DBApi DBAPI = retrofit.create(DBApi.class);
-
-        Call<List<Character>> call = DBAPI.getRestDragonBallResponse();
-        call.enqueue(new Callback<List<Character>>() {
-            @Override
-            public void onResponse(Call<List<Character>> call, Response<List<Character>> response) {
-                if(response.isSuccessful() && response.body() != null) {
-
-                    List<Character> CharacterList = response.body();
-                    saveList(CharacterList);
-                    showList(CharacterList);
-                    //Toast.makeText(getApplicationContext(), "API Success", Toast.LENGTH_SHORT).show();
-                }else{
-                    ShowError();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Character>> call, Throwable t) {
-                ShowError();
-            }
-        });
-    }
-
-    private void saveList(List<Character> CharacterList) {
-        String jsonString = gson.toJson(CharacterList);
-        SharedPreferences
-                .edit()
-
-                .putString("jsonCharacterList", jsonString)
-                .apply();
-
-        Toast.makeText(getApplicationContext(), "List saved", Toast.LENGTH_SHORT).show();
-    }
-
-    private void ShowError() {
+    public void ShowError() {
         Toast.makeText(getApplicationContext(), "Api Error", Toast.LENGTH_SHORT).show();
     }
 
