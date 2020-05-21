@@ -1,4 +1,4 @@
-package com.example.projetmobile_3a;
+package com.example.projetmobile_3a.presentation.model;
 
 public class Character {
     private String species;

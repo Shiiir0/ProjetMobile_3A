@@ -1,12 +1,6 @@
-package com.example.projetmobile_3a;
+package com.example.projetmobile_3a.presentation.view;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +10,10 @@ import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
+import com.example.projetmobile_3a.Constants;
+import com.example.projetmobile_3a.R;
+import com.example.projetmobile_3a.presentation.model.Character;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -30,8 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
 public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
     private List<Character> values;
     Context context;
-    static final String BASE_URL = "https://dragon-ball-api.herokuapp.com/";
+    private OnItemClickListener listener;
 
+    public interface OnItemClickListener {
+        void onItemClick(Character item);
+    }
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -65,8 +60,13 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public listAdapter(List<Character> myDataset) {
-        values = myDataset;
+    public listAdapter(List<Character> myDataset, OnItemClickListener listener) {
+        this.values = myDataset;
+        this.listener = listener;
+    }
+
+    public void setListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -93,18 +93,20 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
 
         //Load image
         if(currentCharacter.getImage().charAt(0) == '.') {
-            Glide.with(context).load(BASE_URL + currentCharacter.getImage()).circleCrop().into(holder.imageDB);
+            Glide.with(context).load(Constants.BASE_URL + currentCharacter.getImage()).circleCrop().into(holder.imageDB);
         }else Glide.with(context).load(currentCharacter.getImage()).circleCrop().into(holder.imageDB);
 
         holder.txtHeader.setText(currentCharacter.getName());
-        holder.txtHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                remove(position);
-            }
-        });
+
 
         holder.txtFooter.setText(currentCharacter.getSpecies());
+
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                listener.onItemClick(currentCharacter);
+            }
+        });
     }
 
     // Return the size of your dataset (invoked by the layout manager)
