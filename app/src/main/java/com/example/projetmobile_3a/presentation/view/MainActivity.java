@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.example.projetmobile_3a.R;
 
+import com.example.projetmobile_3a.Singletons;
 import com.example.projetmobile_3a.presentation.controller.MainController;
 import com.example.projetmobile_3a.presentation.model.Character;
 import com.google.gson.Gson;
@@ -33,14 +34,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        controller = new MainController(
-                this,
-                new GsonBuilder()
-                        .setLenient()
-                        .create(),
-                getSharedPreferences("application_esiea", Context.MODE_PRIVATE)
-
-        );
+        controller = new MainController(this, Singletons.getGson(), Singletons.getSharedPreferencesInstance(getApplicationContext()));
         controller.onStart();
 
     }

@@ -1,15 +1,12 @@
 package com.example.projetmobile_3a.presentation.controller;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
-import com.example.projetmobile_3a.Constants;
-import com.example.projetmobile_3a.data.DBApi;
+import com.example.projetmobile_3a.Singletons;
 import com.example.projetmobile_3a.presentation.model.Character;
 import com.example.projetmobile_3a.presentation.view.MainActivity;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
@@ -18,8 +15,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainController {
@@ -45,15 +40,7 @@ public class MainController {
     }
 
     private void makeApiCall() {
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        DBApi DBAPI = retrofit.create(DBApi.class);
-
-        Call<List<Character>> call = DBAPI.getRestDragonBallResponse();
+        Call<List<Character>> call = Singletons.getDBApi().getRestDragonBallResponse();
         call.enqueue(new Callback<List<Character>>() {
             @Override
             public void onResponse(Call<List<Character>> call, Response<List<Character>> response) {
