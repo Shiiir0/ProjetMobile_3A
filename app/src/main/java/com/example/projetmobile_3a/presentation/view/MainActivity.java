@@ -1,5 +1,6 @@
 package com.example.projetmobile_3a.presentation.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.projetmobile_3a.R;
@@ -87,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void navigateToDetails(Character character) {
+        Intent myIntent = new Intent(MainActivity.this, DetailActivity.class);
+        myIntent.putExtra("DBKey", Singletons.getGson().toJson(character));
+        MainActivity.this.startActivity(myIntent);
 
     }
 }
