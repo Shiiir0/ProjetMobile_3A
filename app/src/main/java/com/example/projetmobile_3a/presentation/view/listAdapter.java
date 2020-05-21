@@ -97,12 +97,7 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
         }else Glide.with(context).load(currentCharacter.getImage()).circleCrop().into(holder.imageDB);
 
         holder.txtHeader.setText(currentCharacter.getName());
-        holder.txtHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                remove(position);
-            }
-        });
+
 
         holder.txtFooter.setText(currentCharacter.getSpecies());
 
