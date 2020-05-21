@@ -7,7 +7,7 @@
 ### Présentation
 
 <p> Un projet de 3ème année démontrant l'utilisation d'une recyclerview, d'une lecture d'APIrest, d'une mise en cache et d'un affichage de détails. </p>
-<p> Cette Application affiche une liste de personnage sortie du manga Dragon Ball et en cliquant sur le personnage que vous souhaitez, vous vous rendrez sur une page de détail du personnnage en question.</p>
+<p> Cette application affiche une liste de personnages sortie du manga Dragon Ball et en cliquant sur le personnage que vous souhaitez, vous vous rendrez sur une page de détail du personnage en question.</p>
 
 ### Prérequis
 
