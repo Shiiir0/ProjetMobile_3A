@@ -1,7 +1,5 @@
 package com.example.projetmobile_3a.presentation.view;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.example.projetmobile_3a.R;
@@ -9,8 +7,6 @@ import com.example.projetmobile_3a.R;
 import com.example.projetmobile_3a.Singletons;
 import com.example.projetmobile_3a.presentation.controller.MainController;
 import com.example.projetmobile_3a.presentation.model.Character;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -53,7 +49,12 @@ public class MainActivity extends AppCompatActivity {
             // define an adapter
 
 
-        listAdapter mAdapter = new listAdapter(listCharacter);
+        listAdapter mAdapter = new listAdapter(listCharacter, new listAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Character item) {
+                controller.onItemClick(item);
+            }
+        });
         recyclerView.setAdapter(mAdapter);
 
 
@@ -85,4 +86,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Api Error", Toast.LENGTH_SHORT).show();
     }
 
+    public void navigateToDetails(Character character) {
+
+    }
 }

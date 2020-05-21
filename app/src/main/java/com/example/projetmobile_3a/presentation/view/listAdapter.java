@@ -22,8 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
 public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
     private List<Character> values;
     Context context;
+    private OnItemClickListener listener;
 
-
+    public interface OnItemClickListener {
+        void onItemClick(Character item);
+    }
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -57,8 +60,13 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public listAdapter(List<Character> myDataset) {
-        values = myDataset;
+    public listAdapter(List<Character> myDataset, OnItemClickListener listener) {
+        this.values = myDataset;
+        this.listener = listener;
+    }
+
+    public void setListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -97,6 +105,13 @@ public class listAdapter extends RecyclerView.Adapter<listAdapter.ViewHolder> {
         });
 
         holder.txtFooter.setText(currentCharacter.getSpecies());
+
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                listener.onItemClick(currentCharacter);
+            }
+        });
     }
 
     // Return the size of your dataset (invoked by the layout manager)
